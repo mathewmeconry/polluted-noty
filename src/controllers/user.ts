@@ -71,6 +71,12 @@ export default class UserController {
 
   private async updateUser(req: Request, res: Response) {
     try {
+      // @ts-ignore
+      if(req.session.user.id !== req.params.id) {
+        res.status(403).json({msg: "Not allowed to change other users"});
+        return
+      }
+
       if (!req.params.id) {
         res.status(400).json({msg: "Missing ID parameter"});
         return;
