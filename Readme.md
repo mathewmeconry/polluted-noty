@@ -4,9 +4,9 @@ This is a challenge for the Hackvent 2022.
 
 ## Description
 
-Pollution is everywhere....  
-For this reason Santa created Noty! A fixed version of Notme. Bugs this time ;)  
-With Noty you can write up all the polluters in your familiy that you see and roast them all at once during christmas.
+A fixed version of Notme. After the previous fiasco with multiple bugs in Notme (Some intended and some not).  
+Santa released a now truly secure note taking app for you.  
+Also Santa makes sure that this service runs on green energy. No pollution from this app ;)  
 
 ## Vulnerability
 
