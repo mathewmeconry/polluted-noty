@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 export default function Login() {
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
+  const [error, setError] = useState('')
   const context = useContext(userContext);
   const navigate = useNavigate();
 
@@ -22,7 +23,13 @@ export default function Login() {
       }),
       credentials: "include",
     });
-    context.setUser(await user.json());
+    const json = await user.json()
+    if(!json.id) {
+      setError(json.msg)
+      return
+    }
+
+    context.setUser(json);
     setUsername(undefined)
     setPassword(undefined)
     navigate('/notes')
@@ -62,6 +69,8 @@ export default function Login() {
       >
         Sign in
       </button>
+      <br />
+      <p style={{color: 'red'}}>{error}</p>
     </Content>
   );
 }

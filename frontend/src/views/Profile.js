@@ -27,7 +27,7 @@ export default function Profile() {
       return
     }
 
-    context.setUser(await user.json());
+    context.setUser(json);
     setPassword(undefined);
     navigate("/notes");
   }
@@ -52,7 +52,6 @@ export default function Profile() {
         />
         <label htmlFor="floatingInput">Password</label>
       </div>
-      <br />
       <br />
       <p style={{color: 'red'}}>{error}</p>
       <button

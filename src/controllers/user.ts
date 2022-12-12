@@ -129,7 +129,7 @@ export default class UserController {
   ) {
     for (const key of Object.keys(sourceObj)) {
       if (!blocklist.includes(key)) {
-        if (key === "passsword") {
+        if (key === "password") {
           // @ts-ignore
           targetObj["password"] = crypto
             .createHash("sha256")
