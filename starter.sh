@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "password" > /tmp/password
 initdb -U noty -D /tmp/data -A password --pwfile /tmp/password 
-pg_ctl -D /tmp/data -l logfile start
+pg_ctl -D /tmp/data -l /tmp/logfile start
 
 export PGPASSWORD=password
 psql -U noty noty -c "create database noty;"

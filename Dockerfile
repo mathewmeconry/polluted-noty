@@ -10,9 +10,6 @@ RUN groupadd -r appuser && \
     chown -R appuser:appuser /home/appuser/ && \ 
     chown -R appuser:appuser /app
 
-# Run everything after as non-privileged user.
-USER appuser
-
 COPY --chown=appuser:appuser starter.sh /
 COPY --chown=appuser:appuser ./src /app/build/src
 COPY --chown=appuser:appuser ./package.json /app/build/package.json
@@ -36,6 +33,9 @@ RUN yarn run build
 RUN chmod u+x /starter.sh
 
 EXPOSE 8080
+
+# Run everything after as non-privileged user.
+USER appuser
 
 ENTRYPOINT [ "sh" ]
 CMD ["/starter.sh"]
