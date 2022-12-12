@@ -1,4 +1,4 @@
-import {Router, NextFunction, Request, Response} from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import User from "../models/user";
 import crypto from "node:crypto";
 import jwt from "jsonwebtoken";
@@ -12,11 +12,11 @@ export default class AuthenticationController {
   private async login(req: Request, res: Response) {
     try {
       if (!req.body.username) {
-        res.status(400).json({msg: "Missing username"});
+        res.status(400).json({ msg: "Missing username" });
         return;
       }
       if (!req.body.password) {
-        res.status(400).json({msg: "Missing password"});
+        res.status(400).json({ msg: "Missing password" });
         return;
       }
 
@@ -31,7 +31,7 @@ export default class AuthenticationController {
       });
 
       if (!user) {
-        res.status(404).json({msg: `User not found!`});
+        res.status(404).json({ msg: `User not found!` });
         return;
       }
 
@@ -41,23 +41,33 @@ export default class AuthenticationController {
         res.json(user.toJSON());
       });
     } catch {
-      res.status(500).json({error: "Something failed"});
+      res.status(500).json({ error: "Something failed" });
     }
   }
 
   private async register(req: Request, res: Response) {
     try {
       if (!req.body) {
-        res.status(400).json({msg: "Missing body"});
+        res.status(400).json({ msg: "Missing body" });
         return;
       }
 
       if (!req.body.username) {
-        res.status(400).json({msg: "Missing username"});
+        res.status(400).json({ msg: "Missing username" });
         return;
       }
       if (!req.body.password) {
-        res.status(400).json({msg: "Missing password"});
+        res.status(400).json({ msg: "Missing password" });
+        return;
+      }
+
+      const existingUser = await User.findOne({
+        where: {
+          username: req.body.username,
+        },
+      });
+      if (existingUser) {
+        res.status(400).send({ msg: "Username already taken" });
         return;
       }
 
@@ -65,7 +75,7 @@ export default class AuthenticationController {
       user = AuthenticationController.functionMergeWithBlocklist(
         user,
         req.body,
-        ["role", "id"]
+        ["role", "id"],
       );
 
       const DBUser = await User.build(
@@ -76,7 +86,7 @@ export default class AuthenticationController {
             .update(req.body.password)
             .digest("hex"),
         },
-        {raw: true}
+        { raw: true },
       ).save();
 
       // @ts-ignore
@@ -86,36 +96,32 @@ export default class AuthenticationController {
       });
     } catch (e) {
       // @ts-ignore
-      res.status(500).json({error: e.message});
+      res.status(500).json({ error: e.message });
     }
   }
 
   public static authMiddleware(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       // @ts-ignore
       if (!req.session.user) {
-        res.status(403).json({msg: "Missing authentication"});
+        res.status(403).json({ msg: "Missing authentication" });
         return;
       }
-      try {
-        next();
-        return;
-      } catch {
-        res.status(500).json({msg: "Failed to parse JWT"});
-      }
+      
+      next();
     } catch {
-      res.status(500).json({error: "Something failed"});
+      res.status(500).json({ error: "Something failed" });
     }
   }
 
   public static functionMergeWithBlocklist(
     targetObj: Object,
     sourceObj: Object,
-    blocklist: string[]
+    blocklist: string[],
   ) {
     for (const key of Object.keys(sourceObj)) {
       if (!blocklist.includes(key)) {
@@ -130,13 +136,14 @@ export default class AuthenticationController {
           // @ts-ignore
           if (typeof sourceObj[key] == "object" && targetObj[key]) {
             // @ts-ignore
-            targetObj[key] = AuthenticationController.functionMergeWithBlocklist(
-              // @ts-ignore
-              targetObj[key],
-              // @ts-ignore
-              sourceObj[key],
-              []
-            );
+            targetObj[key] = AuthenticationController
+              .functionMergeWithBlocklist(
+                // @ts-ignore
+                targetObj[key],
+                // @ts-ignore
+                sourceObj[key],
+                [],
+              );
           } else {
             // @ts-ignore
             targetObj[key] = sourceObj[key];

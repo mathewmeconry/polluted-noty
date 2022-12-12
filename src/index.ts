@@ -16,8 +16,8 @@ async function main() {
     process.env.DB_HOST || "localhost",
     process.env.DB_PORT || "5432",
     process.env.DB_NAME || "noty",
-    process.env.DB_USER || "noty",
-    process.env.DB_PASS || "password"
+    process.env.DB_USER || "postgres",
+    process.env.DB_PASS || "postgres"
   );
 
   const app = Express();
@@ -53,7 +53,7 @@ async function main() {
   await Note.upsert(
     {
       id: 1337,
-      note: process.env.FLAG || 'FLAG',
+      note: process.env.FLAG || 'HV22{P0luT1on_1S_B4d_3vERyWhere}',
       userId: 1337,
     }
   )

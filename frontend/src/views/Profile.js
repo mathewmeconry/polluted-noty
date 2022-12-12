@@ -5,6 +5,7 @@ import {useNavigate} from "react-router-dom";
 
 export default function Profile() {
   const [password, setPassword] = useState();
+  const [error, setError] = useState('')
   const context = useContext(userContext);
   const navigate = useNavigate();
 
@@ -20,6 +21,12 @@ export default function Profile() {
       }),
       credentials: "include",
     });
+    const json = await user.json()
+    if(!json.id) {
+      setError(json.msg)
+      return
+    }
+
     context.setUser(await user.json());
     setPassword(undefined);
     navigate("/notes");
@@ -46,6 +53,8 @@ export default function Profile() {
         <label htmlFor="floatingInput">Password</label>
       </div>
       <br />
+      <br />
+      <p style={{color: 'red'}}>{error}</p>
       <button
         className="w-100 btn btn-lg btn-primary"
         type="submit"
