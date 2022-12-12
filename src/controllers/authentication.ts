@@ -31,7 +31,7 @@ export default class AuthenticationController {
       });
 
       if (!user) {
-        res.status(404).json({ msg: `User not found!` });
+        res.status(404).json({ msg: `User not found or invalid password!` });
         return;
       }
 
